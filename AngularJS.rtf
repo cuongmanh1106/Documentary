@@ -1,0 +1,248 @@
+{\rtf1\ansi\ansicpg1252\deff0\nouicompat\deflang1033{\fonttbl{\f0\fnil\fcharset0 Calibri;}{\f1\fnil\fcharset163 Calibri;}{\f2\fnil\fcharset238 Calibri;}{\f3\fnil\fcharset2 Symbol;}}
+{\colortbl ;\red255\green0\blue0;\red0\green0\blue255;}
+{\*\generator Riched20 10.0.16299}\viewkind4\uc1 
+\pard\sa200\sl276\slmult1\qc\b\f0\fs24\lang9 ANGULAR JS\par
+
+\pard\sa200\sl276\slmult1\b0 c\'e1c thu\f1\lang1066\u7897?\f0\lang9 c t\'ednh c\f1\lang1066\u7911?\f0\lang1033 a component:\par
+
+\pard{\pntext\f3\'B7\tab}{\*\pn\pnlvlblt\pnf3\pnindent0{\pntxtb\'B7}}\fi-360\li720\sa200\sl276\slmult1 template: '<h1>Hello</h1>' (hi\f1\lang1066\u7875?\f0\lang1033 n th\f1\lang1066\u7883?\f0\lang1033  gi\'e1 tr\f1\lang1066\u7883?\f0\lang1033  trong '')\fs22\lang9\par
+{\pntext\f3\'B7\tab}\fs24\lang1033 selector: 'app-word' (using app-word to appear template)\fs22\lang9\par
+{\pntext\f3\'B7\tab}\fs24\lang1033 styles: array contain css style\fs22\lang9\par
+{\pntext\f3\'B7\tab}\fs24\lang1033 templateUrl: './word.component.html' (get value in 'url' to appear)\fs22\lang9\par
+{\pntext\f3\'B7\tab}\fs24\lang1033 styleUrls:\fs22\lang9\par
+
+\pard\sa200\sl276\slmult1\fs24\lang1033\par
+Add bootstrap into project:\par
+
+\pard\li720\sa200\sl276\slmult1\cf1 using cmd:  yarn add bootstrap jquery\par
+
+\pard\sa200\sl276\slmult1\cf0 enter folder:angular-cli.json: add \cf1 "../node_modules/bootstrap/dist/css/bootstrap.min.css" into tag styles\par
+\cf0\b C\'e1ch t\f1\lang1066\u7841?\f0\lang1033 o component m\f1\lang1066\u7899?\f0\lang1033 i s\f1\lang1066\u7917?\f0\lang1033  d\f1\lang1066\u7909?\f0\lang1033 ng angular-cli\par
+\tab\b0 install angular-cli: \cf1 npm install -g @angular/cli\par
+\cf0\tab t\f1\lang1066\u7841?\f0\lang1033 o component m\f1\lang1066\u7899?\f0\lang1033 i: \cf1 ng g c book \cf0 // t\f1\lang1066\u7841?\f0\lang1033 o component book\par
+\par
+\ul\b form\par
+\ulnone\b0 .html\cf1  \i <input placeholder="Enter name" (keyup) = "showEvent($event);">\par
+<h3>Your name is: \{\{ name \}\}</h3>\par
+\cf0\i0 .ts : \cf1\i showEvent(event) \{\par
+    this.name = event.target.value;\par
+  \}\par
+\par
+\cf0\ul\b\i0 Two way binding:\par
+
+\pard 
+{\pntext\f0 1.\tab}{\*\pn\pnlvlbody\pnf0\pnindent0\pnstart1\pndec{\pntxta.}}
+\fi-360\li720\sa200\sl276\slmult1\ulnone\b0 import \{ FormsModule \} from '@angular/forms'\cf1\i\par
+{\pntext\f0 2.\tab}\cf0\i0 th\'eam v\'e0o imports: [    BrowserModule,    FormsModule  ]\par
+{\pntext\f0 3.\tab}t\f1\lang1066\u7915?\f0\lang1033  form b\f1\lang1066\u7887?\f0\lang1033  xu\f1\lang1066\u7889?\f0\lang1033 ng nha: thay .html =  \cf1\i <input placeholder="Enter name" [(ngModel)] = "name">\par
+{\pntext\f0 4.\tab}\cf0\i0 b\f1\lang1066\u7887?\f0\lang1033  h\'e0m showEvent trong .ts\cf1\i\par
+
+\pard\sa200\sl276\slmult1\cf0\i0\par
+\ul\b Template reference variable:\par
+
+\pard\li720\sa200\sl276\slmult1\ulnone\b0\i <input placeholder="Enter name" [(ngModel)] = "name" \cf1 #txtname\cf0 >\par
+<h3>Your name is: \{\{ name \}\}</h3>\par
+<code>\{\{ \cf1 txtname\cf0 .value \}\}</code>\par
+
+\pard\sa200\sl276\slmult1\i0\par
+\cf1\i\par
+\cf0\ul\b\i0 Class binding v\'e0 style binding:\par
+
+\pard\fi-360\li720\sa200\sl276\slmult1\ulnone\b0 4.\tab\fs28\lang9 <div \cf1\i [class]="isHighlight ? 'square':'circle'\cf0\i0 "></div><br>\par
+5.\tab <h3 \cf1\i [style.color] = "name.length % 2 === 0? 'red':'black\cf0\i0 '" >Your name is: \{\{ name \}\}</h3>\par
+6.\tab <div \cf1\i [class.circle] = "!isHighlight" [class.square] = "isHighlight\cf0\i0 "></div>\par
+
+\pard\sa200\sl276\slmult1\ul\b\fs24\lang1033\par
+15.Directive, ngStyle, ngClass\par
+\cf1\ulnone\b0\i <!--\cf0\b\i0 ngStyle\cf1\b0\i -->\par
+<h3 [ngStyle] = "name.length % 2 === 0 ? evenStyle : oddStyle" >Your name is: \{\{ name \}\}</h3>\par
+\par
+<!--\cf0\b ngClass\cf1\b0 -->\par
+<div [ngClass] = "currentClass"></div>\par
+\par
+\cf0\ul\b\i0 .ts\cf1\ulnone\b0\i\par
+evenStyle = \{color:'red', fontSize: '20px'\};\par
+  oddStyle = \{color:'blue', fontSize: '40px'\};\par
+  name = '';\par
+  isHighlight = false;\par
+  currentClass = \{circle: this.isHighlight, square: !this.isHighlight\}\par
+\cf0\ul\b\i0\par
+16.struction directive\par
+\ulnone\b0 <p \cf1\i *ngIf = "isShow"\cf0\i0 >\par
+  struct works!\par
+</p>\par
+\par
+<ul>\par
+  <li \cf1\i *ngFor = "let menu of menus"> \cf0\i0   //gi\f1\lang1066\u7889?\f0\lang1033 ng foreach(menu as menus)\par
+    <p>\{\{ 'Fresh:'+ menu \}\}</p>\par
+  </li>\par
+</ul>\par
+\ul\b 20.\par
+\ulnone\b0\par
+<\i button *\cf1 ngIf = "!isShowForm" (click) = "addForm()">\cf0 Th\'eam t\f1\lang1066\u7915? m\u7899?i</button><br>\par
+<div \cf1 *ngIf = "isShowForm\cf0 ">\par
+    <input placeholder="English" \cf1 [(ngModel)] = "newEn\cf0 "><br>\par
+    <input placeholder="Vietnamese" \cf1 [(ngModel)] = "newVn\cf0 "><br>\par
+    <button \cf1 (click) = "addNew()">\cf0 Th\f0\lang1033\'eam t\f1\lang1066\u7915? m\u7899?i</button><br>\par
+</div>\par
+<div *\cf1 ngFor = "let word of arrWords\cf0 ">\par
+    <h4 [ngStyle] = "\cf1 word.memorized \cf0 ? \{color: 'blue'\}: \{color : 'red'\}">\{\{ word.en \}\}</h4>  <!--[ngStyle] = "color:word.memorized?:'blue':'red'"-->\par
+    <h4>\{\{ word.vn \}\}</h4>\par
+\par
+</div>\par
+\par
+\ul\b\i0\f0\fs28\lang1033 X\'f3a ph\f1\lang1066\u7847?\f0\lang1033 n t\f1\lang1066\u7917?\f0\lang1033  kh\f1\lang1066\u7887?\f0\lang1033 i m\f1\lang1066\u7843?\f0\lang1033 ng:\par
+\ulnone\b0    \cf1\i const index = this.arrWords.findIndex(word=>word.id === id);//t\'ecm index\par
+    this.arrWords.splice(index,1);//x\'f3a index\par
+\cf0\ul\b\i0 L\f1\lang1066\u7885?\f0\lang1033 c ra:\par
+\ulnone\b0 <select \cf1\i [(ngModel)] = "filterStatus" \cf0\i0 >\par
+    <option value="all">Xem t\f1\lang1066\u7845?t c\u7843?</option>\par
+    <option value="memorized">Xem nh\u7919?ng t\u7915? \f2\'f0\f0\lang1033\'e3 nh\f1\lang1066\u7899?</option>\par
+    <option value="none">Xem nh\u7919?ng t\u7915? ch\f2\u432?a nh\f1\u7899?</option>\par
+</select>\par
+<div *ngFor = "let word of arrWords">\par
+    <div \cf1\i *ngIf = "filterStatus === 'all' || (filterStatus === 'memorized' && word.memorized) || (filterStatus === 'none' && !word.memorized\cf0\i0 )">\par
+        <h4 [ngStyle] = "word.memorized ? \{color: 'blue'\}: \{color : 'red'\}">\{\{ word.en \}\}</h4>  <!--[ngStyle] = "color:word.memorized?:'blue':'red'"-->\par
+        <h4>\{\{ word.vn \}\}</h4>\par
+        <button (click) = "delete(word.id)">Delete</button>\par
+    </div>\par
+\par
+</div>\par
+\par
+\ul\b\f0\lang1033 HO\f1\lang1066\u7862?\f0\lang1033 C\par
+\cf1\ulnone\b0\i getShowStatus(memorized: boolean) \{\par
+    const dkAll = this.filterStatus === 'all';\par
+    const dkMemorized = this.filterStatus === 'memorized' && memorized;\par
+    const dkNone = this.filterStatus === 'none' && !memorized;\par
+    return dkAll || dkMemorized || dkNone;\par
+  \}\par
+\cf0\ul\b\i0\fs32 Truy\f1\lang1066\u7873?\f0\lang1033 n bi\f1\lang1066\u7871?\f0\lang1033 n cho component:\par
+\ulnone\fs28 app.html\b0 : <app-person \cf1\i name = "M\f1\lang1066\u7841?nh C\f2\u432?\f1\u7901?ng" age = "18\cf0\i0 "></app-person>\par
+\f0\lang1033\tab <app-person \cf1\i name = "Harrik" age = "22\cf0\i0 "></app-person>\f1\lang1066\par
+\b\f0\lang1033 .ts\b0 : import \{ Component, OnInit , \cf1\i Input\cf0\i0  \}\par
+ \cf1\i @Input() name:string\par
+  @Input() age:number\par
+\cf0\b\i0 person.html\b0 : \cf1\i <h2>\{\{name\}\}</h2>\par
+\tab\tab <p>\{\{ age \}\}</p>\par
+\i0\par
+\cf0\ul\b\fs32 ngFor k\f1\lang1066\u7871?\f0\lang1033 t h\f1\lang1066\u7907?\f0\lang1033 p input:\par
+\ulnone\fs28 .html: \cf1\b0\i <div *ngFor = "let person of arrPerson">\par
+  <app-person [name]="person.name" [age]="person.Age"></app-person>\par
+</div>>\par
+\cf0\b\i0 .ts: \cf1\b0\i arrPerson = [\par
+    \{name: 'Ken', Age:21\},\par
+    \{name: 'Ron', Age:18\},\par
+    \{name: 'John', Age:35\}\par
+  ];\par
+\par
+\cf0\ul\b\i0\fs32 OUTPUT:\par
+\b0\fs28 parent: \cf1\ulnone\i template: '<div>\{\{ value \}\}</div> <app-child (myClick) = "changeValue($event)"></app-child> '\par
+\par
+export class ParentComponent \{\par
+    value = 0;\par
+    changeValue(isAdd: boolean) \{\par
+        if(isAdd) \{\par
+            this.value = this.value + 1;\par
+        \} else \{\par
+            this.value = this.value - 1;\par
+        \}\par
+    \}\par
+\}\par
+\par
+\cf0\ul\i0 child: \cf1\ulnone\i template: '<button (click) = "addValue()">Add</button><button (click) = "subValue(false)">Sub</button>'\par
+export class ChildComponent \{\par
+    @Output() myClick = new EventEmitter<boolean>();\par
+    addValue() \{\par
+        this.myClick.emit(true);\par
+    \}\par
+    subValue() \{\par
+        this.myClick.emit(false)\par
+    \}\par
+\}\par
+\par
+\cf0\ul\b\i0 ViewChild:(30+31)\par
+\cf1\ulnone\b0\i @Component (\{\par
+    selector: 'app-con',\par
+    template: '<h3>\{\{ value \}\}</h3>'\par
+\})\par
+export class ConComponent \{\par
+    value = 0;\par
+\}\par
+\cf0\ul\i0 Cha:\par
+\ulnone\i\fs24 import \{ Component, \cf1 ViewChild\cf0  \} from '@angular/core'\par
+\cf1 import \{ ConComponent \} from './con.component'\par
+\cf0\par
+@Component (\{\par
+    selector: 'app-cha',\par
+    template: '<button (click) = "addChild()">App for child</button> <app-con></app-con>'\par
+\})\par
+export class ChaComponent \{\par
+    \cf1 @ViewChild(ConComponent)\par
+    myChild: ConComponent;\par
+\cf0     addChild()\par
+    \{\par
+        this.myChild.value++;\par
+    \}\par
+\}\par
+\par
+\ul\b\i0\fs32 ng-content:\par
+\ulnone\b0\fs24 template: `\par
+        <div class="card">\par
+            <div class = "header">\cf1\par
+                <ng-content select = ".card-header"></ng-content>\par
+\cf0             </div>\par
+            <div class = "body">\cf1\par
+                <ng-content select = ".card-body"></ng-content>\par
+\cf0             </div>\par
+        </div>\par
+    `,\par
+\ul\fs28 app.html:\cf1\ulnone\i\fs24\par
+<app-card>\par
+    <div class="card-body">Hihi</div>\par
+    <div class="card-header">Otike</div>\par
+</app-card>\par
+\par
+\cf0\ul\b\i0\fs28 PIPE(33) \cf1\ulnone\b0\i\fs24\par
+{\cf0{\field{\*\fldinst{HYPERLINK https://angular.io/api }}{\fldrslt{https://angular.io/api\ul0\cf0}}}}\f0\fs24\par
+\cf0\ul\b\i0\fs28 costompipe(pipe t\f1\lang1066\u7921?\f0\lang1033  \f2\'f0\f1\lang1066\u7883?\f0\lang1033 nh ngh\f2\u297?\f0 a:34)\par
+\b0 round.pipe.ts:\par
+\cf1\ulnone\i\fs24 import \{ Pipe, PipeTransform \} from '@angular/core';\par
+@Pipe(\{name: 'roundNum'\})\par
+export class RoundPipe implements PipeTransform \{\par
+    transform(value: number): number \{\par
+        return Math.round(value);\par
+    \}\par
+\}\par
+\cf0\ul\b\i0\fs28 service & httpservice(35->37):\par
+\par
+From:\par
+\ulnone\b0\i\fs24 <form (submit) = "onSubmit(formSignin);"  #formSignin = "ngForm"> \par
+        <input placeholder = "Email" [(ngModel)] = "email" name = "email" required /><br>\par
+        <p *ngIf = "formSignin.controls.email?.errors?.required"> \par
+            email is require\par
+        </p>\par
+        <input placeholder = "password" type = "password" name = "password" [(ngModel)] = "password" required /><br>\par
+        <button [disabled] = "formSignin.invalid">Submit</button>\par
+    </form>\par
+  `,\par
+\par
+\par
+ onSubmit(formSignin)\par
+    \{\par
+        console.log(formSignin.value);\par
+\par
+    \}\par
+\ul\b\fs28\par
+\cf1\ulnone\b0\fs24\par
+\par
+\par
+\par
+\par
+\cf0\ul\b\i0\par
+\cf1\ulnone\b0\i\par
+\i0\par
+
+\pard\li720\sa200\sl276\slmult1\cf0\fs22\lang9\par
+\par
+}
+ 
