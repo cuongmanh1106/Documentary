@@ -1,5 +1,5 @@
 {\rtf1\ansi\ansicpg1252\deff0\nouicompat\deflang1033{\fonttbl{\f0\fnil\fcharset0 Roboto;}{\f1\fnil\fcharset163 Roboto;}{\f2\fnil\fcharset238 Roboto;}{\f3\fnil\fcharset2 Symbol;}}
-{\colortbl ;\red255\green0\blue0;\red0\green77\blue187;}
+{\colortbl ;\red255\green0\blue0;\red0\green77\blue187;\red155\green187\blue89;}
 {\*\generator Riched20 10.0.16299}\viewkind4\uc1 
 \pard\sa200\sl276\slmult1\f0\fs22\lang9 1.T\f1\lang1066\u7841?\f0\lang9 o m\lang1033 igration\par
 \cf1 php artisan make:migration create_abc_table --create=abc\par
@@ -28264,7 +28264,123 @@ delete file from link: unlink(public_path('img/'.$old_img));\par
 \ulnone controller: \ul '\ulnone created_at' => Carbon::now() \par
 note: use Carbon\\Carbon;\par
 view : \fs24\{\{ \\Carbon\\Carbon::createFromTimeStamp(strtotime($product->created_at))->diffForHumans()\}\}\par
-\i\fs22\par
+\par
+\cf2\ul\b\fs36 up web 000webhost:\par
+\cf0\ulnone\b0\fs24 DB_CONNECTION=mysql\par
+DB_HOST=\cf1 localhost\par
+\cf0 DB_PORT=3306\par
+DB_DATABASE=\cf1 id4969365_gym\par
+\cf0 DB_USERNAME=\cf1 id4969365_gym\par
+\cf0 DB_PASSWORD=\cf1 manhcuong\par
+\par
+\cf0 note: sau \f2\'f0\f0\'f3 n\'f3 s\f1\lang1066\u7869?\f0\lang1033  b\'e1o l\f1\lang1066\u7895?\f0\lang1033 i \cf1 Wrong COM_STMT_PREPARE response size. Received 7\par
+th\'eam v\'e0o config/database.php\par
+\cf0 'mysql' => [\par
+    'driver' => 'mysql',\par
+    'host' => env('DB_HOST', 'localhost'),\par
+    //.......\cf1\par
+    'options'   => [PDO::ATTR_EMULATE_PREPARES => true,]\par
+\cf0 ],\par
+\par
+\cf2\ul\b\fs36 AJAX LARAVEL:\par
+\cf1\ulnone\b0\fs28 .html:\cf2\par
+\cf0 onkeyup="search(this.value,'show',\cf1 '\{\{ route('admin.products.search'\cf0 ) \}\}')"\par
+\cf1 .js:\par
+\cf0 jQuery.ajax(\{\par
+\tab\tab type: "GET",\par
+\tab\tab url: route, //"/gym-collection/admin/auth/products/search",\par
+\tab\tab\cf1 data: "value=" +value,\par
+\cf0\tab\tab success: function(data,status) \{\par
+\tab\tab\tab //alert(value);\par
+\tab\tab\tab $('#'+show).html(data);\par
+\tab\tab\}\par
+\par
+\tab\});\par
+ta c\'f3: \cf1 Route::get('/search','Admin\\ProductsController@search')->name('admin.products.search'); (n\'f3 mapping v\f1\lang1066\u7899?\f0\lang1033 i route \f1\lang1066\u7903?\f0\lang1033  ajax)\par
+\cf0 ti\f1\lang1066\u7871?\f0\lang1033 p n\'f3 s\f1\lang1066\u7869?\f0\lang1033  ch\f1\lang1066\u7841?\f0\lang1033 y v\'e0o ProductsController x\f1\lang1066\u7917?\f0\lang1033  l\'fd d\f1\lang1066\u7919?\f0\lang1033  li\f1\lang1066\u7879?\f0\lang1033 u sau \f2\'f0\f0\'f3 hi\f1\lang1066\u7875?\f0\lang1033 n th\f1\lang1066\u7883?\f0\lang1033  v\'e0o v\f1\lang1066\u7883?\f0\lang1033  tr\'ed c\'f3 \cf1 id = "show" \cf0\par
+hi\f1\lang1066\u7875?\f0\lang1033 n th\f1\lang1066\u7883?\cf1\f0\lang1033 : <div id="show"></div>\par
+\par
+\cf2\ul\b\fs36 Lib Shopping Cart:\par
+\cf1\b0 install\cf2\b\par
+
+\pard{\pntext\f3\'B7\tab}{\*\pn\pnlvlblt\pnf3\pnindent0{\pntxtb\'B7}}\fi-360\li720\sa200\sl240\slmult1\cf0\ulnone\b0\fs28 composer.json: into required "\cf1\i gloudemans/shoppingcart": "~2.3\cf0\i0 "\fs20\par
+{\pntext\f3\'B7\tab}\fs28 config/app.php:                                                               \cf1\i Gloudemans\\Shoppingcart\\ShoppingcartServiceProvider::class \fs20                                                              \fs28 'Cart' => Gloudemans\\Shoppingcart\\Facades\\Cart::class,\fs20\par
+{\pntext\f3\'B7\tab}\i0\fs28 entrance cmd: php composer.phar update\i\par
+
+\pard\sa200\sl240\slmult1\par
+\ul\i0\fs36 Ajax update cart:\par
+\cf0\ulnone\i\fs28 $(document).ready(function() \{\cf1\par
+                <?php\par
+                    $count = Cart::content()->count();\par
+                    for($i = 1; $i <= $count ; $i++) \{         \par
+                ?>\par
+\cf0                 $("\cf3 .updatecart<?php echo $i?>\cf0 ").click(function () \{\par
+                    var rowid = $(this).attr('id');\par
+                    var qty = $(this).parent().parent().find(".qty").val();\par
+                    var token = $("input[name = '_token']").val();\par
+\par
+                    if(qty == "") \{\par
+                        alert('Quanlity not allow null!!');\par
+                    \} else if(isNaN(qty)) \{\par
+                        alert('Quanlity must be a number'); \par
+                    \} else if(qty < 1) \{\par
+                        alert('Quanlity must more than 1!!!');\par
+                    \} else \{\par
+                        $.ajax(\{\par
+                            url:"\{\{ route('cart.update') \}\}",\par
+                            type:'POST',\par
+                            cache:false,\par
+                            data:\{"_token":token, "id":rowid, "qty":qty\},\par
+                            success:function(data, status) \{\par
+                                var kq = data;\par
+                                var s = kq.split("/");\par
+                                document.getElementById("total-pro<?php echo $i?>").innerHTML = s[0];\par
+                                document.getElementById("total-cart").innerHTML = "Total:"+s[1].toString();\par
+                            \}\par
+                        \});\par
+                    \}\par
+                \});\par
+                \cf1 <?php\par
+                \}\par
+                ?>\par
+\cf0             \});\par
+\par
+\cf2\ul\fs36 PHP\par
+\cf0\ulnone\fs28 <form action="#" method="POST">\par
+            <input type="hidden" name="_token" value="\{\{ csrf_token() \}\}">\par
+            <?php \par
+                $dem = 1;\par
+            ?>\par
+            @foreach($content as $c)\par
+            <tr>\par
+                <td>\{\{ $c->name \}\}</td>\par
+                <td><img src="\{\{ asset('/public/img/'.$c->options['img']) \}\}" width="50px"  style="width: 150px" /></td>\par
+                <td><input min="1" type="number" class="qty" value="\{\{ $c->qty \}\}" /> </td>\par
+                <td>\{\{ number_format($c->price,0,",",".") \}\}</td>\par
+                <td id="total-pro\{\{ $dem \}\}">\{\{ number_format($c->price*$c->qty,0,",",".") \}\}</td>\par
+                <td>\par
+                    <a class="btn btn-warning \cf3 updatecart\{\{ $dem++ \}\}" \cf0 id="\{\{ $c->rowId \}\}"><i class="fas fa-window-close"></i></a>\par
+                    <a class="btn btn-danger" onclick="delete_cart('\{\{$c->rowId\}\}','\{\{route('cart.delete')\}\}')"><i class="fas fa-window-close"></i></a>\par
+                </td>\par
+            </tr>\par
+            @endforeach\par
+        </form>\par
+\par
+\par
+\cf2\ul\i0\fs36 Function of Shopping Cart:\par
+\cf0\ulnone\i\fs28 Cart::add(array('id'=>$id,'name'=>$product->name,'qty'=>1,'price'=>$product->price,'options'=>array('img'=>$product->image)));\par
+\par
+$content = Cart::content();\par
+$total = Cart::subtotal();\par
+Cart::remove($id);\par
+Cart::update($id,$qty);\par
+$count = Cart::content()->count();\fs22\par
+\cf1\fs28\par
+
+\pard\li720\sa200\sl240\slmult1\i0\fs24\par
+\fs18\par
+
+\pard\sa200\sl240\slmult1\cf0\i\fs22\par
 \cf1\fs32\par
 \par
 
