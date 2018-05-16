@@ -1,0 +1,96 @@
+{\rtf1\ansi\ansicpg1252\deff0\nouicompat\deflang1033{\fonttbl{\f0\fnil\fcharset0 Roboto;}{\f1\fnil\fcharset238 Roboto;}{\f2\fnil\fcharset163 Roboto;}{\f3\fnil\fcharset2 Symbol;}}
+{\colortbl ;\red255\green0\blue0;\red0\green0\blue255;\red155\green187\blue89;\red0\green77\blue187;\red75\green172\blue198;\red255\green192\blue0;}
+{\*\generator Riched20 10.0.16299}\viewkind4\uc1 
+\pard\sa200\sl276\slmult1\qc\cf1\f0\fs32\lang9 H\f1\u432?\f2\lang1066\u7899?\f0\lang1033 ng d\f2\lang1066\u7851?\f0\lang1033 n s\f2\lang1066\u7917?\f0\lang1033  d\f2\lang1066\u7909?\f0\lang1033 ng Webservice c\f2\lang1066\u7911?\f0\lang1033 a Harrik\lang9\par
+
+\pard\sa200\sl276\slmult1\cf0\fs24\par
+base_url: {{\field{\*\fldinst{HYPERLINK https://cuongmanh2311.000webhostapp.com/ }}{\fldrslt{https://cuongmanh2311.000webhostapp.com/\ul0\cf0}}}}\f0\fs24\par
+\cf1\ul\fs28 Table Products \fs24\par
+\cf0 column\ulnone : \cf3 id, name, cate_id, price, intro, description, ima\tab ge, view, status\par
+\cf0 Method:\par
+
+\pard{\pntext\f3\'B7\tab}{\*\pn\pnlvlblt\pnf3\pnindent0{\pntxtb\'B7}}\fi-360\li720\sa200\sl276\slmult1\cf4 /products (GET): \cf0 get all products \par
+{\pntext\f3\'B7\tab}\cf4 /products/show/id (GET)\cf0 : get only one product with id. example: /products/\cf1 show/1 \cf0 (get detail of products have id = 1)\cf3\par
+{\pntext\f3\'B7\tab}\cf4 /products/store (POST\cf0 ): \cf1 param(name, cate_id, price, intro, description, image\cf0 ) is all field in table (except id , status default =0, view default =  0).\cf3\par
+{\pntext\f3\'B7\tab}\cf4 /products/update(POST): \cf0 param l\'e0 t\f2\lang1066\u7845?\f0\lang9 t c\f2\lang1066\u7843?\f0\lang9  c\'e1c field c\'f3 id n\f2\lang1066\u7919?\f0\lang1033 a nha m\f2\lang1066\u7845?\f0\lang1033 y m\'e1. Nh\f2\lang1066\u7919?\f0\lang1033 ng field n\'e0o kh\'f4ng thay \f1\'f0\f2\lang1066\u7893?\f0\lang1033 i th\'ec kh\'f4ng c\f2\lang1066\u7847?\f0\lang1033 n cho v\'e0o param vd:(id =1& name = cuongdeptrai: th\'ec n\'f3 s\f2\lang1066\u7869?\f0\lang1033  update name c\f2\lang1066\u7911?\f0\lang1033 a id = 1 c\'f2n m\f2\lang1066\u7845?\f0\lang1033 y field k\'eca gi\f2\lang1066\u7919?\f0\lang1033  nguy\'ean).\cf3\lang9\par
+{\pntext\f3\'B7\tab}\cf4 /products/destroy/id (GET): \cf0 i know u understand this one. t\f2\lang1066\u7921?\f0\lang1033  \f1\'f0\f2\lang1066\u7897?\f0\lang1033 ng ki\f2\lang1066\u7875?\f0\lang1033 m tra s\f2\lang1066\u7843?\f0\lang1033 n ph\f2\lang1066\u7849?\f0\lang1033 m \f1\'f0\f0\'f3 c\'f3 n\f2\lang1066\u7857?\f0\lang1033 m trong rent hay bills ch\f1\u432?\f0 a n\f2\lang1066\u7871?\f0\lang1033 u \f1\'f0\f0\'e3 c\'f3 tr\f2\lang1066\u7843?\f0\lang1033  v\f2\lang1066\u7873?\f0\lang1033  false\lang9\par
+{\pntext\f3\'B7\tab}\cf4 /products/search (GET): \cf1 param(name) \cf0\par
+{\pntext\f3\'B7\tab}\cf4 /products/cate_product (GET): \cf1 param(cate_id) \cf0 get products within cate_id.\cf3\par
+{\pntext\f3\'B7\tab}\cf4 /products/paging(GET): \cf1 param(vt,limit) \cf0 get product from vt to limit.\par
+{\pntext\f3\'B7\tab}\cf4 /products/soft_cate(GET): \cf1 param(id,cate_id,limit\cf0 ) l\f2\lang1066\u7845?\f0\lang9 y limit s\f2\lang1066\u7843?\f0\lang9 n ph\f2\lang1066\u7849?\f0\lang9 m c\'f9ng lo\f2\lang1066\u7841?\f0\lang9 i tr\f2\lang1066\u7915?\f0\lang1033  ra id\lang9\par
+
+\pard\sa200\sl276\slmult1\cf1\ul\fs28 Table Categories\par
+\cf0\ulnone\fs24 column:\cf3 id, name, parent_id, description\par
+\cf0 Method:\par
+
+\pard{\pntext\f3\'B7\tab}{\*\pn\pnlvlblt\pnf3\pnindent0{\pntxtb\'B7}}\fi-360\li720\sa200\sl276\slmult1\cf4 /categories(GET): \cf0 get all.\par
+{\pntext\f3\'B7\tab}\cf4 /categories/show/id(GET): \cf0 kh\'f4ng c\'f3 param truy\f2\lang1066\u7873?\f0\lang1033 n th\f2\lang1066\u7857?\f0\lang1033 ng v\'e0o url \lang9 same products.\par
+{\pntext\f3\'B7\tab}\cf4  /categories/store(POST) \cf0 : param(name,parent_id,description).\par
+{\pntext\f3\'B7\tab}\cf4 /categories/update(POST): \cf0 param(id and field need to update).\par
+{\pntext\f3\'B7\tab}\cf4 /categories/destroy/id(GET): \cf0 kh\'f4ng c\'f3 param truy\f2\lang1066\u7873?\f0\lang1033 n th\f2\lang1066\u7857?\f0\lang1033 ng id v\'e0o url , ki\f2\lang1066\u7875?\f0\lang1033 m tra lo\f2\lang1066\u7841?\f0\lang1033 i c\'f3 s\f2\lang1066\u7843?\f0\lang1033 n ph\f2\lang1066\u7849?\f0\lang1033 m hay c\'f3 lo\f2\lang1066\u7841?\f0\lang1033 i n\'e0o l\'e0 cha c\f2\lang1066\u7911?\f0\lang1033 a n\'f3 hay kh\'f4ng n\f2\lang1066\u7871?\f0\lang1033 u c\'f3 th\'ec tr\f2\lang1066\u7843?\f0\lang1033  v\f2\lang1066\u7873?\f0\lang1033  false.\lang9\par
+{\pntext\f3\'B7\tab}\cf4\lang1033 /categories/search(GET): \cf0 param(name).\lang9\par
+{\pntext\f3\'B7\tab}\cf4\lang1033 /categories/parent(GET) \cf0 : param(id) l\f2\lang1066\u7845?\f0\lang1033 y con c\f2\lang1066\u7911?\f0\lang1033 a th\f2\lang1066\u7857?\f0\lang1033 ng id truy\f2\lang1066\u7873?\f0\lang1033 n v\'e0o (id l\'e0 cha)\lang9\par
+
+\pard\sa200\sl276\slmult1\cf1\ul\fs28\lang1033 Table Users:\par
+\cf0\ulnone\fs24 column: \cf3 id, name, email, role, password\par
+\cf0\fs28 Method:\par
+
+\pard{\pntext\f3\'B7\tab}{\*\pn\pnlvlblt\pnf3\pnindent0{\pntxtb\'B7}}\fi-360\li720\sa200\sl276\slmult1\cf4\fs24 /users(GET): \cf0 get all\lang9\par
+{\pntext\f3\'B7\tab}\cf4\lang1033 /users/show/id(GET): \cf0 same products\lang9\par
+{\pntext\f3\'B7\tab}\cf4 /users/login(POST): \cf0 param(email, password)\par
+{\pntext\f3\'B7\tab}\cf4 /users/store(POST): \cf0 param(name,email,password,role(int))\par
+{\pntext\f3\'B7\tab}\cf4 /users/update(POST): \cf0 param(id,field wanna update)\par
+{\pntext\f3\'B7\tab}\cf4 /users/destroy/id(GET) \cf0\par
+{\pntext\f3\'B7\tab}\cf4 /users/search(GET): \cf0 param(name)\par
+{\pntext\f3\'B7\tab}\cf4 /users/permission(GET): \cf0 param(role) ch\f2\lang1066\u7881?\f0\lang9  th\f2\lang1066\u7845?\f0\lang9 y nh\f2\lang1066\u7919?\f0\lang1033 ng \cf1 quy\f2\lang1066\u7873?\f0\lang1033 n\cf0  nh\f2\lang1066\u7887?\f0\lang1033  h\f1\u417?\f0 n ho\f2\lang1066\u7863?\f0\lang1033 c b\f2\lang1066\u7857?\f0\lang1033 ng th\f2\lang1066\u7857?\f0\lang1033 ng \f1\'f0\f0 ang \f1\'f0\'e3\f0 ng nh\f2\lang1066\u7853?\f0\lang1033 p.\lang9\par
+{\pntext\f3\'B7\tab}\cf4\lang1033 /users/user_permission(GET): \cf0 param(role) l\f2\lang1066\u7845?\f0\lang1033 y nh\f2\lang1066\u7919?\f0\lang1033 ng \cf1 user\cf0  c\'f3 quy\f2\lang1066\u7873?\f0\lang1033 n nh\f2\lang1066\u7887?\f0\lang1033  h\f1\u417?\f0 n user hi\f2\lang1066\u7879?\f0\lang1033 n t\f2\lang1066\u7841?\f0\lang1033 i\lang9\par
+
+\pard\sa200\sl276\slmult1\cf1\ul\fs28\lang1033 Table Permission:\par
+\cf0\ulnone column: \cf3 id, name\par
+\cf0 Method:\par
+
+\pard{\pntext\f3\'B7\tab}{\*\pn\pnlvlblt\pnf3\pnindent0{\pntxtb\'B7}}\fi-360\li720\sa200\sl276\slmult1\cf4\fs24 /permission(GET): \cf0 get all.\lang9\par
+{\pntext\f3\'B7\tab}\cf4\lang1033 /permission/show/id(GET): \cf0 get detail without param\lang9\par
+{\pntext\f3\'B7\tab}\cf4\lang1033 /permission/store(POST): \cf0 param(name)\lang9\par
+{\pntext\f3\'B7\tab}\cf4\lang1033 /permission/update(POST): \cf0 param(name)\lang9\par
+{\pntext\f3\'B7\tab}\cf4\lang1033 /permission/delete/id(GET)\cf0\lang9\par
+
+\pard\sa200\sl276\slmult1\cf1\fs28\lang1033 Table Rent:\par
+\cf0 column: \cf3 id, pro_id, user_id,status(default = \fs24\lang9 0)\par
+\cf0\fs28 Method:\par
+
+\pard{\pntext\f3\'B7\tab}{\*\pn\pnlvlblt\pnf3\pnindent0{\pntxtb\'B7}}\fi-360\li720\sa200\sl276\slmult1\cf4\fs24 /rent(GET): \cf0 get all\cf3\fs20\par
+{\pntext\f3\'B7\tab}\cf4\fs24 /rent/store(POST): \cf1 param(user_id,pro_id): \cf0 khi m\f1\u432?\f2\lang1066\u7907?\f0\lang1033 n s\'e1ch th\'ec s\f2\lang1066\u7869?\f0\lang1033  t\f2\lang1066\u7921?\f0\lang1033  \f1\'f0\f2\lang1066\u7897?\f0\lang1033 ng g\f2\lang1066\u7917?\f0\lang1033 i mail \f1\'f0\f2\lang1066\u7871?\f0\lang1033 n kh\'e1ch h\'e0ng m\f1\u432?\f2\lang1066\u7907?\f0\lang1033 n s\'e1ch.\fs20\lang9\par
+{\pntext\f3\'B7\tab}\cf4\fs24 /rent/update(PUT): \cf1 param(id,status,pro_id) \cf0 update rent n\f2\lang1066\u7871?\f0\lang9 u status = 1(ngh\f1\u297?\f0 a l\'e0 tr\f2\lang1066\u7843?\f0\lang9  s\'e1ch) th\'ec update b\'ean s\f2\lang1066\u7843?\f0\lang9 n ph\f2\lang1066\u7849?\f0\lang9 m status = 0.\cf3\fs20\par
+{\pntext\f3\'B7\tab}\cf4\fs24\lang1033 /rent/destroy/id:(DELETE)\cf3\fs20\lang9\par
+{\pntext\f3\'B7\tab}\cf4\fs24 /rent/user(GET):\cf1 param(user_id) \cf0 l\f2\lang1066\u7845?\f0\lang9 y nh\f2\lang1066\u7919?\f0\lang1033 ng quy\f2\lang1066\u7875?\f0\lang1033 n s\'e1ch trong th\f1\u432?\f0  vi\f2\lang1066\u7879?\f0\lang1033 n c\f2\lang1066\u7911?\f0\lang1033 a kh\'e1ch h\'e0ng \f1\'f0\f0\'f3\cf3\fs20\lang9\par
+{\pntext\f3\'B7\tab}\cf4\fs24\lang1033 /rent/user_rent(GET): \cf1 param(user_id) \cf0 l\f2\lang1066\u7845?\f0\lang1033 y s\'e1ch m\'e0 kh\'e1ch h\'e0ng \f1\'f0\f0\'e3 m\f1\u432?\f2\lang1066\u7907?\f0\lang1033 n(status = 0)\cf3\fs20\lang9\par
+{\pntext\f3\'B7\tab}\cf4\fs24\lang1033 /rent/pro(GET): \cf1 param(pro_id): \cf0 l\f2\lang1066\u7845?\f0\lang1033 y nh\f2\lang1066\u7919?\f0\lang1033 ng s\'e1ch trong th\f1\u432?\f0  vi\f2\lang1066\u7879?\f0\lang1033 n c\f2\lang1066\u7911?\f0\lang1033 a kh\'e1ch h\'e0ng \f1\'f0\f0\'f3\cf3\fs20\lang9\par
+{\pntext\f3\'B7\tab}\cf4\fs24\lang1033 rent/status(GET): \cf1 param(status) \cf0 l\f2\lang1066\u7845?\f0\lang1033 y nh\f2\lang1066\u7919?\f0\lang1033 ng s\'e1ch c\'f3  status ='status'\cf3\fs20\lang9\par
+{\pntext\f3\'B7\tab}\cf4\fs24\lang1033 rent/status(GET): \cf1 param(user_id) \cf0 l\f2\lang1066\u7845?\f0\lang1033 y nh\f2\lang1066\u7919?\f0\lang1033 ng s\'e1ch c\f2\lang1066\u7911?\f0\lang1033 a kh\'e1ch h\'e0ng \f1\'f0\f0\'f3\cf3\fs20\lang9\par
+{\pntext\f3\'B7\tab}\cf4\fs24\lang1033 rent/status(GET): \cf1 param(status,user_id) \cf0 l\f2\lang1066\u7845?\f0\lang1033 y nh\f2\lang1066\u7919?\f0\lang1033 ng s\'e1ch c\f2\lang1066\u7911?\f0\lang1033 a kh\'e1ch h\'e0ng \f1\'f0\f0\'f3 c\'f3 status ='status\cf3\fs20\lang9\par
+
+\pard\sa200\sl276\slmult1\cf1\fs28\lang1033 Table Bills\par
+\cf0 coloum: \cf3 id, member_id, total, status\par
+
+\pard{\pntext\f3\'B7\tab}{\*\pn\pnlvlblt\pnf3\pnindent0{\pntxtb\'B7}}\fi-360\li720\sa200\sl276\slmult1\cf5 /bills(GET): \cf0 get all\fs20\lang9\par
+{\pntext\f3\'B7\tab}\cf5\fs28\lang1033 /bills/store(POST) \cf3 : \cf0 param(member_id, total, status)\fs20\lang9\par
+{\pntext\f3\'B7\tab}\cf5\fs28 /bills/update(POST): \cf0 param(id,status) chuy\f2\lang1066\u7875?\f0\lang9 n tr\f2\lang1066\u7841?\f0\lang9 ng thai ch\f1\u432?\f0 a xem(0) th\'e0nh \f1\'f0\f0\'e3 xem(1)\par
+{\pntext\f3\'B7\tab}\cf5 /bills/destroy/id(GET)\cf3\par
+{\pntext\f3\'B7\tab}\cf5 /bills/user(GET\cf0 ):  param(user_id)l\f2\lang1066\u7845?\f0\lang9 y ra nh\f2\lang1066\u7919?\f0\lang1033 ng h\'f3a \f1\'f0\u417?\f0 n m\'e0 m\f2\lang1066\u7897?\f0\lang1033 t kh\'e1ch h\'e0ng \f1\'f0\f0\'e3 mua.\lang9  \cf3\par
+
+\pard\sa200\sl276\slmult1\cf1 Table bill_detail\cf3\par
+\cf0 coloum\cf3 : id, bill_id, pro_id, price, quantity, total\par
+
+\pard{\pntext\f3\'B7\tab}{\*\pn\pnlvlblt\pnf3\pnindent0{\pntxtb\'B7}}\fi-360\li720\sa200\sl276\slmult1\cf5 /bill_detail(GET): \cf0 param(bill_id) l\f2\lang1066\u7845?\f0\lang9 y chi ti\f2\lang1066\u7871?\f0\lang9 t h\'f3a hd c\f2\lang1066\u7911?\f0\lang9 a 1 hd.\par
+{\pntext\f3\'B7\tab}\cf5 /bill_detail/store(POST): \cf0 param(bill_id, pro_id, price, quantity, total)\par
+{\pntext\f3\'B7\tab}\cf5 /bill_detail/pro(GET\cf0 ): param(pro_id) l\f2\lang1066\u7845?\f0\lang9 y danh s\'e1ch s\f2\lang1066\u7843?\f0\lang9 n ph\f2\lang1066\u7849?\f0\lang9 m \f1\'f0\f0\'e3 \f1\'f0\u432?\f2\lang1066\u7907?\f0\lang9 c mua.\par
+
+\pard\sa200\sl276\slmult1\cf3\par
+
+\pard\sa200\sl276\slmult1\qc\cf6\lang1033 That's all thanks for reading\par
+author: Harrik\fs22\lang9\par
+
+\pard\sa200\sl276\slmult1\cf3\par
+}
+ 
