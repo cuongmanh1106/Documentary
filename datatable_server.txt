@@ -1,0 +1,11 @@
+public function ajaxOutletVisitAction(Request $request) {
+		$params = $request->all();
+		$result = OutletsRepository::getOutletVisit($params);
+		$data = $result['data'];
+		foreach($result['data'] as $value) {
+			$value->date = date('j F y', strtotime($value->date));
+			$value->client = $value->client;
+			$value->sale_person = $value->client->saleweb_saleperson;
+		}
+		return \Response::json(['data'=>$result['data'],'total'=>$result['total'],'params'=>$params]);
+	}
