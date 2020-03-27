@@ -1,0 +1,5 @@
+fix overflow (đúng trên android sai bên IOS)
+main {
+  max-width: 100%;
+  overflow-x: hidden;
+}

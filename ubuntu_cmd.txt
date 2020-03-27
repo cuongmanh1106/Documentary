@@ -1,0 +1,13 @@
+Ubuntu
+
+install curl:
+-sudo apt install php-curl
+Error: Unzip not found
+-sudo apt-get install php-zip
+-sudo phpenmod zip
+-sudo service apache2 restart
+
+cd: go to path
+cd .. :go back
+ll: show all files
+nano: view code path_file

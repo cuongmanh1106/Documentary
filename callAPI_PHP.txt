@@ -1,0 +1,96 @@
+private function doGet($url, $fields)
+	{
+		$response = null;
+		
+		try {
+			$ch = curl_init();
+			
+			if(!empty($fields)) {
+				if(strpos($url, "?") === false)
+					$url = $url . '?' . http_build_query($fields);
+				else
+					$url = $url . '&' . http_build_query($fields);
+			}
+			$url = preg_replace('/%5B[0-9]+%5D/simU', '%5B%5D', $url);
+
+			curl_setopt($ch, CURLOPT_URL, $url);
+			curl_setopt($ch, CURLOPT_HTTPGET, true);
+			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+			curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+			curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
+			curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+
+			$response = curl_exec($ch);
+
+			curl_close($ch);
+		} catch (\Exception $ex) {
+			$response = null;
+		}
+		
+		return $response;
+	}
+	
+    private function doPost($url, $fields)
+    {
+		$httpcode = null;
+		
+    	try {
+	    	$ch = curl_init();
+			
+			$jsonString = json_encode($fields);
+
+			curl_setopt($ch, CURLOPT_URL, $url);
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonString);
+			curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+					'Content-Type: application/json',
+					'Content-Length: ' . strlen($jsonString))
+			);
+		    curl_setopt($ch, CURLOPT_POST, true);
+	    	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+	    	curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+	    	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	    	curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
+	    	curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+
+	    	curl_exec($ch);
+			
+			$httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+			
+	    	curl_close($ch);
+    	} catch (\Exception $ex) {
+			$httpcode = null;
+    	}
+		
+		return $httpcode;
+    }
+	
+	 private function _doPut($url, $fields)
+    {
+        $httpcode = null;
+        try {
+            $ch = curl_init();
+            $str_data = http_build_query($fields);
+            $str_data = json_encode($fields);
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $str_data);      
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                        'Content-Type: application/json',
+                        'Content-Length: ' . strlen($str_data))
+            );      
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+        
+           $response = curl_exec($ch);            
+        
+        curl_close ($ch);
+        } catch (\Exception $ex) {
+            $httpcode = null;
+        }
+        
+        return $httpcode;
+    }

@@ -1,0 +1,45 @@
+document: https://viblo.asia/p/tap-hop-nhung-cau-lenh-git-huu-dung-dWrvwWr2vw38
+
+git add 
+git reset HEAD (Unstage các files)
+
+-Squash các commit lại thành 1 commit:
+git rebase -i HEAD~4 (pick đầu s commit sau)
+
+-save tạm:
+git stash save
+
+-bỏ save tạm: 
+git stash apply stash@{0}
+
+-log:
+git log
+
+-merge branch
+git merge HGW_Awards_dev_html_v2 
+git rebase HGW_Awards_dev_html_v2 (stand in branchCuong)
+
+-delete branch: 
+git branch -D <branch_name>
+
+-copy code qua new branch:
+git checkout -b HGW_Awards_Cuong
+
+
+
+
+-when would like to get new code
+
+git stash save (save current code in stash)
+checkout another branch 
+git pull -r
+git checkout my branch
+git rebase anothe branch
+
+-Chuyển commit từ branch này sang branch khác
+git cherry-pick <id của commit>
+
+-Delete branch 
+git push --delete origin HGW_Awards_cuong
+
+

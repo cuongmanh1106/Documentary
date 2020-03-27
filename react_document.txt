@@ -1,0 +1,11 @@
+Use Effect
+
+ - chỉ dùng cho class
+ - run khi render run 
+ - bao hàm cả ComponentDidMount and ComponentDidUpdate
+ - nếu chỉ effect 1 state thì dùng useEffect(()=>{},[state])
+ - nếu run 1 lần thì cho array là rỗng useEffect(()=>{},[])
+ - nếu dùng như ComponentWillUnmount thì cho return trong useEffect
+ 
+Use callback hook: khi muốn chỉ re-render phần cần change ( dùng khi catch a function  không trả về giá trị)
+Use Memo book: khi muốn chỉ re-render phần cần change ( dùng khi catch a result -> hàm có trả về giá trị)

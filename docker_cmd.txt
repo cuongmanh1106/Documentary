@@ -1,0 +1,11 @@
+docker command:
+
+
+docker container ls (show all service)
+
+docker exec -it de2985e5f379 /bin/bash (run service)
+
+
+a2ensite awards.hgwr.local.conf (enable vhost)
+
+service apache2 start
