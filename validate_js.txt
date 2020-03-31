@@ -1,0 +1,178 @@
+var business = {
+    info: {},
+    businessForm: $('#business_form'),
+    btnSubmit: $('#save_business'),
+
+    validateFormBusiness: function() {
+        var self = this;
+        self.businessForm.validate({
+            errorElement: 'span',
+            errorClass: 'error-msg',
+            rules: {
+                name: {required: true,notDefaultText:true},
+                address: {required: true},
+                contact_no: {required: true, minlength: 8, number: true},
+                brn_no: {required: true},
+                operation_hour: {required: true},
+                person_name: {required: true},
+                person_contact_no: {required: true},
+                email: {required: true, email: true},
+                term_of_use: {required:true},
+                file: {imgType:true}
+
+            },
+            messages: {
+                name: "name is required.",
+                brn_no: "Last name is required.",
+                email: {
+                    required: "Email is required.",
+                    email: "Please enter a valid email address (example: name@email.com).",
+                },
+                contact_no: {
+                    required: "Mobile number is required.",
+                    minlength: "Mobile number is minimum 8 characters.",
+                    number: "Mobile number accept number only."
+                }
+            },
+            errorPlacement: function(error, element) {
+                var customInput = element.closest('div.custom-input');
+                error.appendTo(customInput);
+            },
+            highlight: function (element, errorClass, validClass) {
+                var customInput = $(element).closest('div.custom-input');
+                customInput.find('div.box.box-white').addClass('error').removeClass(validClass);
+            },
+            unhighlight: function (element, errorClass, validClass) {
+                var customInput = $(element).closest('div.custom-input');
+                customInput.find('div.box.box-white').addClass(validClass).removeClass('error');
+            },
+        });
+    },
+    getInfo: function() {
+        Dropzone.autoDiscover = false;
+        var arr_img = [];
+        this.validateFormBusiness();
+        var self = this;
+
+        $("#file").change(function () {
+            var html = '';
+            var check = true;
+            var fileExtension = ['image/jpeg', 'image/png', 'image/jpg'];
+            if($.inArray(this.files[0].type, fileExtension) == -1){
+                $('#img-error').html('Invalid Format Type. Please Check Again');
+                $('#img-error').attr('style','color:red');
+                return false;
+            }
+            if (this.files && this.files[0] && check) {
+                business.info.append('myfile[]',this.files[0]);
+                arr_img.push(this.files[0].name);
+                var reader = new FileReader();
+                html = '<p class="uploaded-file font-size-20">'+this.files[0].name+'<a data-name='+this.files[0].name+' class="link-remove js-remove remove_image" href="javascript:;"><i class="fa fa-trash-o"></i></a></p>';
+                $('.list_image').append(html);
+
+                reader.readAsDataURL(this.files[0]);
+            }
+        });
+
+        $("#dropzone-js").dropzone({
+            url: "tmp",
+            clickable: true,
+            previewTemplate: '<p class="uploaded-file font-size-20"><span data-dz-name></span><a class="remove_image"  href="javascript:;"><i class="fa fa-trash-o"></i></a></p>',
+            previewsContainer: '#js-preview-container',
+            acceptedFiles: '.jpeg, .png, .jpg, application/pdf, .doc, .docx',
+            accept: function(file) {
+                var html = '';
+                var fileReader = new FileReader();
+                fileReader.readAsDataURL(file);
+                business.info.append('myfile[]',file);
+                arr_img.push(file.name);
+                html = '<p class="uploaded-file font-size-20">'+file.name+'<a data-name='+file.name+' class="link-remove js-remove remove_image" href="javascript:;"><i class="fa fa-trash-o"></i></a></p>';
+                $('.list_image').append(html);
+            }
+        });
+
+        $(document).on('click','.remove_image',function(){
+            var img = $(this).data('name');
+            arr_img.splice(arr_img.indexOf(img), 1);
+            $(this).parent().remove();
+
+        });
+
+
+        self.businessForm.on('submit', function (e) {
+            e.preventDefault();
+            if (!self.businessForm.valid()) {
+                return false;
+            }
+            business.info.append('name',$('input[name=shopfront-name]').val());
+            business.info.append('address',$('input[name=address]').val());
+            business.info.append('contact_no',$('input[name=business_contact_no]').val());
+            business.info.append('brn_no',$('input[name=brn_no]').val());
+            business.info.append('website_url',$('input[name=website_url]').val());
+            business.info.append('description',$('textarea[name=description]').val());
+            business.info.append('operation_hour',$('input[name=operation_hour]').val());
+            business.info.append('cuisine_dishes',$('input[name=cuisine_dishes]').val());
+            business.info.append('person_name',$('input[name=person_name]').val());
+            business.info.append('email',$('input[name=business_email]').val());
+            business.info.append('person_contact_no',$('input[name=person_contact_no]').val());
+            business.info.append('arr_img',arr_img);
+            business.info.append('facebook',$('input[name=facebook]').val());
+            business.info.append('instagram',$('input[name=instagram]').val());
+            $.ajax({
+                type:'POST',
+                url: $('#submit_url').val(),
+                data:business.info,
+                contentType: false,
+                processData: false,
+                dataType : "json",
+                success:function(data,status) {
+                    if(data.success === true) {
+                        window.location.href = $('#thank_you_url').val()
+                    } else {
+                        var validator = self.businessForm.validate();
+                        validator.showErrors(response.errors);
+                    }
+
+                },
+                beforeSend: function() {
+                    self.btnSubmit.addClass('disabled');
+                },
+                complete: function() {
+                    self.btnSubmit.removeClass('disabled');
+                },
+                fail: function() {
+                    alert("Failed to connect to server,please try again!");
+                }
+            });
+        });
+
+    },
+
+    init: function (value, element) {
+        business.info = new FormData();
+        this.validateFormBusiness();
+        this.getInfo();
+    }
+};
+
+$(document).ready(function() {
+    business.init();
+    $.validator.addMethod("notDefaultText", function (value, element) {
+        if (value == $(element).attr('placeholder')) {
+            return false;
+        } else {
+            return true;
+        }
+    });
+    $.validator.addMethod("imgType", function (value, element) {
+        var reader = new FileReader();
+        var fileExtension = ['image/jpeg', 'image/png', 'image/jpg'];
+        if($.inArray(value[0].files[0].type, fileExtension) == -1){
+            $('#img-error').html('Invalid Format Type. Please Check Again');
+            $('#img-error').attr('style','color:red');
+            return false;
+        }
+        return true;
+
+    });
+});

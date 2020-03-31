@@ -11,3 +11,16 @@ cd: go to path
 cd .. :go back
 ll: show all files
 nano: view code path_file
+
+// Clear cache
+php app/console cache:clear --env=prod --no-debug
+
+// Nếu lỗi thì run dòng này
+sudo chmod -R 777 app/cache/
+
+// Run lệnh này nếu có file js, css, images ...
+php app/console assets:install web --symlink
+
+// Set quyền ghi cho folder
+sudo chmod -R 777 web/
+sudo chmod -R 777 app/

@@ -1,0 +1,211 @@
+var map;
+       
+        $(document).ready(function(){
+            $('#keyword').on('keyup',function(){
+                var searchData = $(this).val();
+                $.ajax({
+                    type:'POST',
+                    url: "{{ path('ajax_get_outlets') }}",
+                    data:{'searchData':searchData},
+                    success:function(data,status) {
+                        var html = '';
+                        var outlets = data['data'];
+                        $.each(outlets,function(index,value){
+                            html += '<li class="outlet d-flex justify-content-between">';
+                            html += '<div class="outlet-content">';
+                            html += '<p class="outlet-name">'+value['name']+'</p>';
+                            html += '<p class="outlet-address">'+value['address']+'</p>';
+                            html += '</div>';
+                            html += '<div class="outlet-icon">';
+                            html += '<a  class="showPosition" href="javascript:void(0)" data-status ="'+value['status']+'"  data-index="'+value['id']+'" data-outlet="'+value['name']+'" data-name="'+value['address']+'"><img src="{{ asset('bundles/app/images/icons/Google Map Icon.png') }}" alt=""></a>';
+                            html += '</div>';
+                            html += '</li>';
+                            html += '';
+                        });
+                        $('.outlets').html(html); 
+                        initMap();
+
+                    }
+                })
+            })
+        })
+
+        function initMap() {
+            map = new google.maps.Map(
+                    document.getElementById('map'),
+                    {center: new google.maps.LatLng(1.302516, 103.840133), zoom: 16});
+            ShowMap();
+
+            // google.maps.event.addDomListener(window, 'load', function () {
+            //     var from_places = new google.maps.places.Autocomplete(document.getElementById('keyword'));
+            //     google.maps.event.addListener(from_places, 'place_changed', function () {
+            //         var from_place = from_places.getPlace();
+            //         var from_address = from_place.formatted_address;
+            //         $('#origin').val(from_address);
+            //         var geocoder = new google.maps.Geocoder();
+            //         geocoder.geocode( { 'address': from_address}, function(results, status) {
+            //             if (status == google.maps.GeocoderStatus.OK) {
+            //                 var latitude = results[0].geometry.location.lat();
+            //                 var longitude = results[0].geometry.location.lng();
+            //                 ShowMap(latitude,longitude);
+
+            //             }
+            //         });
+
+            //     });
+            // });
+
+            $('.showPosition').on('click',function(){
+                var name = $(this).data('name');
+                var id = $(this).data('index');
+                var outlet_status = $(this).data('status');
+                var outlet_name = $(this).data('outlet');
+                var geocoder = new google.maps.Geocoder();
+                geocoder.geocode( { 'address': name}, function(results, status) {
+                    if (status == google.maps.GeocoderStatus.OK) {
+                        var latitude = results[0].geometry.location.lat();
+                        var longitude = results[0].geometry.location.lng();
+                        var place_id = results[0].place_id;
+                        var request = {
+                          placeId: place_id,
+                          fields: ['name', 'geometry', 'photos', 'rating', 'user_ratings_total']
+                        };
+                        map.setCenter(results[0].geometry.location);
+                        
+                        var service = new google.maps.places.PlacesService(map);
+                        service.getDetails(request, function(place, status) {
+                            if (status === google.maps.places.PlacesServiceStatus.OK) {
+                                var save_place = {
+                                    place_id: place_id,
+                                    photos:'',
+                                    rating:'',
+                                    user_ratings_total:'',
+                                    name: place.name,
+                                }
+
+                                if( place.photos != null) {
+                                    save_place.photos =  place.photos[0].getUrl({maxWidth: 80, maxHeight: 80});
+                                }
+                                if(place.rating != null) {
+                                    save_place.rating = place.rating;
+                                }
+                                if(place.user_ratings_total != null) {
+                                    save_place.user_ratings_total = place.user_ratings_total;
+                                }
+                                ShowMap(latitude,longitude,outlet_name,save_place);
+                                if(outlet_status == 0) {
+                                    $.ajax({
+                                        type:'POST',
+                                        url: "{{ path('ajax_save_outlet_position')}}",
+                                        data:{'id':id,'lat':latitude,'long':longitude,'place_id':place_id,'save_place':save_place},
+                                        success:function(data,status){
+                                        }
+                                    })
+                                }
+                            }
+                        });
+                    }
+                })
+            })
+        }
+
+        function ShowMap(lat=null,long=null,name_point=null,place_info=null) {
+            var icon = "{{ asset('bundles/app/images/icons/Custom-Pin-Icon.png') }}";
+            map = null;
+            var request = null;
+            if(lat == null) {
+                map = new google.maps.Map(
+                    document.getElementById('map'),
+                    {center: new google.maps.LatLng(1.302516, 103.840133), zoom: 16});
+            } else {
+                console.log(place_info);
+                var request = {
+                  placeId: place_info.place_id,
+                  fields: ['name', 'geometry', 'photos', 'rating', 'user_ratings_total']
+                };
+                map = new google.maps.Map(
+                    document.getElementById('map'),
+                    {center: new google.maps.LatLng(lat, long), zoom: 16});
+                var position =  new google.maps.LatLng(lat, long);
+                var marker = new google.maps.Marker({
+                    position: position,
+                    icon: icon,
+                    map: map,
+                    title: name_point
+                });
+                if(place_info !== null && place_info.photos != "" && place_info.rating != "") {
+                    var infowindow = addInfoWindow(place_info);
+                    infowindow.open(map, marker);
+                    marker.addListener('click', function() {
+                      infowindow.open(position, marker);
+                    });
+                    marker.addListener('mouseout', function() {
+                      infowindow.close();
+                    });
+                }
+             
+            }
+            var arrOutlet = [];
+            $.ajax({
+                type:'POST',
+                url: '{{path("ajax_get_outlets")}}',
+                async: false,
+                success:function(data) {
+                    arrOutlet = data['data'];
+                }
+            })
+            var features = [];
+            var geocoder = new google.maps.Geocoder();
+            $.each(arrOutlet, function(index,value){
+                var address = value['address'].trim();
+                var name = value['name'].trim();
+                var position =  new google.maps.LatLng(value['latitude'], value['longitude']);
+                // 
+                var marker = new google.maps.Marker({
+                    position: position,
+                    icon: icon,
+                    map: map,
+                    title: value['name']
+                });
+                var place_value = value['place_info'];
+                if(place_value !== null && place_value.photos != "" && place_value.rating != "") {
+                    var infowindow = addInfoWindow(place_value);
+                    marker.addListener('mouseover', function() {
+                      infowindow.open(position, marker);
+                    });
+                    marker.addListener('mouseout', function() {
+                      infowindow.close();
+                    });
+                }
+            })
+
+            // Create markers.
+
+            // for (var i = 0; i < features.length; i++) {
+            //     var marker = new google.maps.Marker({
+            //         position: features[i].position,
+            //         icon: icon,
+            //         map: map,
+            //         title: features[i].title
+            //     });
+            // };
+        }
+
+        function addInfoWindow(place) {
+        var contentString = '<div id="outlet-info"><img id="outlet-img" src="'+place.photos+'" /><div id="outlet-detail"><h3>'+place.name+'</h3><div id="outlet-rating">'+place.rating+'<div class="stars-outer"><div class="stars-inner" style="width:'+starStyling(place.rating)+'"></div></div> ('+place.user_ratings_total+')</div></div></div>';        
+        
+        return new google.maps.InfoWindow({
+          content: contentString
+        });
+      }
+
+      function starStyling(rating) {
+        const starTotal = 5;
+        const starPercentage = (rating / starTotal) * 100;
+        return `${(Math.round(starPercentage / 10) * 10)}%`;
+      }
+
+       
+
+    </script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCV7S9kpDiDhTeNkq6cdWyyNcPFcv4OgVs&libraries=places&callback=initMap"></script>
