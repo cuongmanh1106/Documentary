@@ -1,0 +1,37 @@
+protected function sendEmail($params) {
+        if( !empty($params['from']) ){
+            $from = $params['from'];
+        } else {
+            $from = $this->container->getParameter('mailer_sender');
+        }
+        $to = isset($params['to']) ? $params['to'] : '';
+        if (!$to) {
+            return false;
+        }
+        $body = isset($params['body']) ? $params['body'] : '';
+        if (!$body) {
+            return false;
+        }
+        $title = isset($params['title']) ? $params['title'] : '';
+         $message = \Swift_Message::newInstance()
+                ->setSubject($title)
+                ->setFrom($from)
+                ->setTo($to)
+                
+                ->setBody($body,'text/html');
+        // add bcc      
+        if (isset($params['bcc']))
+        {
+            $message->setBcc($params['bcc']);
+        }
+        if(isset($params['attach'])) {
+            if (is_array($params['attach'])) {
+                foreach ($params['attach'] as $item) {
+                    $message->attach(\Swift_Attachment::fromPath($item));
+                }
+            } else {
+                $message->attach(\Swift_Attachment::fromPath($params['attach']));
+            }
+        }
+        return $this->container->get('mailer')->send($message);
+    }

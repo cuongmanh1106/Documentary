@@ -1,0 +1,557 @@
+var awardsSearch = {
+
+    MIN_LENGTH_SEARCH_TEARM: 3,
+
+    searchInput: $('#search-restaurant'),
+
+    searchNotFound: $('#voting_search_not_found'),
+
+    searching: $('#voting_search_loading'),
+
+    searchResultList: $("#voting_search_result_list"),
+
+    searchResultTypingList: $('#voting_search_result_typing'),
+
+    ajaxCalling: false,
+
+    currentPage: 1,
+
+    firstItem: 0,
+
+    totalItem: 0,
+
+    countPage: 1,
+
+    footerHeight: 0,
+
+    flag: true,
+
+    inputKeyup: false,
+
+    inputEnter: false,
+
+    letter: '',
+
+    init: function() {
+        var self = this;
+        self.showAll();
+        self.showAlphabetSection();
+        self.searchInputHandler();
+        self.onScrolling();
+        self.footerHeight = parseInt($('footer').outerHeight());
+    },
+
+    searchInputHandler: function () {
+        var self = this;
+        var typingTimer;
+        // 1 second.
+        var doneTypingInterval = 1000;
+        var searchTerm = '';
+        self.searchInput.on('keypress', function(e) {
+            // Prevent submit if Enter key pressed.
+            if ($.active > 0) {
+                return false;
+            }
+
+            if (e.keyCode == 13) {
+                e.preventDefault();
+                self.inputEnter = true;
+                self.searchTyping = true;
+                self.resetResult();
+                self.letter = '';
+                searchTerm = $.trim(self.searchInput.val());
+                self.loadSearchAjax(searchTerm);
+                self.inputEnter = false;
+                return false;
+            }
+        });
+        var beforeText = $.trim(self.searchInput.val());
+        self.searchInput.on('keyup', function(e) {
+            searchTerm = $.trim(self.searchInput.val());
+            clearTimeout(typingTimer);
+            if (searchTerm.length < self.MIN_LENGTH_SEARCH_TEARM || beforeText == searchTerm || self.inputEnter == true) {
+                return false;
+            }
+
+            typingTimer = setTimeout(function() {
+                if(self.inputEnter == true) {
+                    return false;
+                }
+                self.inputEnter == false;
+                self.resetResult();
+                self.letter = '';
+                self.searchTyping = true;
+                self.loadSearchAjax(searchTerm);
+                beforeText = searchTerm;
+            }, doneTypingInterval);
+
+        });
+    },
+
+    showAlphabetSection: function(){
+        var self = this;
+        $('#alphabet-filter li a').on('click',function(){
+
+            var section = $(this).attr('href');
+            var alphabet = section.split('-');
+
+            if(self.searchInput.val() != '') {
+                self.searchResultTypingList.show();
+                self.searchResultList.show();
+            }
+
+            if($('#list-'+alphabet[1]).html() == ''  && self.flag == true) {
+                self.searchTyping = false;
+                self.letter = (alphabet[1].toLowerCase() == '0')? '#' : alphabet[1].toLowerCase();
+                $('#list-'+alphabet[1]).remove();
+                $('#vote_'+alphabet[1].toLowerCase()).remove();
+                var html = '<h2 id="list-'+alphabet[1].toLowerCase()+'" style="display: block">'+ self.letter.toUpperCase() +'</h2>';
+                html += '<ul class="results row" id="vote_'+alphabet[1].toLowerCase()+'"></ul>'
+                $('#list-'+alphabet[1]).show();
+                self.searchResultList.append(html);
+                self.currentPage = 1;
+                self.firstItem = 0;
+                self.countPage = 1;
+                self.loadSearchAjax('');
+            }
+
+
+        });
+    },
+
+    loadSearchAjax: function(searchTerm) {
+        var self = this;
+        if (('' === searchTerm && self.searchTyping == true)  || self.flag == false || (self.countPage == 0 && self.letter=='') ) {
+            return false;
+        }
+        self.flag = false;
+
+        $.ajax({
+            type: "GET",
+            url: awardsSearchPrams.autoCompleteUrl,
+            data: {
+                search_term: searchTerm,
+                p: self.currentPage,
+                first_item: self.firstItem,
+                prefix: self.letter
+            },
+            dataType : "json",
+            success: function(response) {
+                if (response.success === true) {
+                    var type = 'auto';
+                    if(searchTerm != '' && self.letter == '') {
+                        type = 'typing';
+                    }
+                    self.displayResult(response.businesses, response.total, type);
+                    self.firstItem = response.firstItem;
+                    self.countPage = response.countPage;
+                    self.totalItem = response.totalPage;
+                }
+            },
+            fail: function() {
+                alert("Failed to connect to server,please try again!");
+            },
+            beforeSend: function() {
+                self.ajaxCalling = true;
+                self.displayLoading(true);
+            },
+            complete: function() {
+                self.ajaxCalling = false;
+                self.displayLoading(false);
+                // $utilsJs.lazyloading();
+                self.currentPage++;
+                self.flag = true;
+            }
+        });
+    },
+
+    displayResult: function(businesses, total, type) {
+        var self = this;
+        if (businesses.length == 0 && total === 0) {
+            self.searchNotFound.show();
+            self.flag = false;
+        } else {
+            self.searchNotFound.hide();
+
+            var rowTemplate = $('#voting_row_template').html();
+            for (var i = 0; i < businesses.length; i ++) {
+                var item = businesses[i];
+                var name = $.trim(item.name);
+                var alphabet = '';
+                var firstSymbol = name.charAt(0);
+                if(/^[a-zA-Z]*$/.test(firstSymbol) == false) {
+                    alphabet = '0';
+
+                } else {
+                    alphabet = firstSymbol;
+                }
+
+                var id = item.id;
+
+                var image = item.image;
+                if(image == '') {
+                    image = $('#default_image_url').val();
+                }
+                var sector = item.sector.region;
+                var href = 'javascript:;';
+                href = awardsSearchPrams.votingUrl.replace('abc', id);
+                var row = rowTemplate
+                    .replace(/\(\(name\)\)/g, name)
+                    .replace('((image))', image)
+                    .replace('((zone))', sector)
+                    .replace(/\(\(href\)\)/g, href);
+
+                row = $(row);
+                if(type == 'auto') {
+                    self.searchResultList.show();
+                    $('#vote_'+alphabet.toLowerCase()).append(row);
+                    if($('#vote_'+alphabet.toLowerCase()).attr('class') == '') {
+                        $('#vote_'+alphabet.toLowerCase()).attr('class','results row');
+                    }
+                    if($('#list-'+alphabet.toLowerCase()).html() == '' ) {
+                        if(alphabet == '0') {
+                            $('#list-'+alphabet.toLowerCase()).html('#');
+                        } else {
+                            $('#list-'+alphabet.toLowerCase()).html(alphabet.toUpperCase());
+                        }
+                        $('#list-'+alphabet.toLowerCase()).show();
+
+                    }
+                } else {
+                    self.searchResultTypingList.show();
+                    var resultText = "((result)) results for '((searchTerm))'";
+                    var text = resultText.replace('((searchTerm))', self.searchInput.val())
+                        .replace('((result))', total);
+                    $('#result-number').show();
+                    $('#result-number').html(text);
+                    $('#vote_typing').append(row);
+                    $('#vote_typing').attr('class', 'results row');
+
+                }
+            }
+        }
+
+    },
+
+    onScrolling : function() {
+        var self = this;
+
+        // Detect when scrolled to bottom.
+        $('#result-group').scroll(function() {
+            if(self.searchInput.val() != '' && self.letter != '') {
+                resultHeight = self.searchResultTypingList.height() +  self.searchResultList.height();
+            } else if(self.searchInput.val() != '' && self.letter == '') {
+                resultHeight =  self.searchResultTypingList.height();
+            } else {
+                resultHeight =  self.searchResultList.height()
+            }
+            if ($('#result-group').scrollTop() + $('#result-group').height() >=  resultHeight ) {
+                if ($.active > 0 ||  self.totalItem > self.countPage) {
+                    return false;
+                }
+                var searchTerm = $.trim(self.searchInput.val());
+                if(self.letter != '') {
+                    searchTerm = '';
+                }
+                self.loadSearchAjax(searchTerm);
+            }
+        });
+    },
+
+    displayLoading: function(show) {
+        var self = this;
+        var loading = (self.currentPage === 1 && self.letter == '') ? self.searching : $('#voting_result_list_loading');
+        if (!show) {
+            loading.hide();
+        } else {
+            loading.show();
+        }
+    },
+
+    showAll: function(){
+        var self = this;
+        self.resetResult();
+        self.loadSearchAjax('');
+
+    },
+
+    resetGlobal: function() {
+        var self = this;
+        $('.total_result').html('');
+    },
+    resetResult: function() {
+        var self = this;
+        self.searchResultTypingList.hide();
+        self.searchResultTypingList.find('#result-number').html('');
+        self.searchResultTypingList.find('#vote_typing').html('');
+        self.searchResultList.hide();
+        self.searchResultList.find('h2').html('');
+        self.searchResultList.find('h2').hide();
+        self.searchResultList.find('ul').html('');
+        self.searchNotFound.hide();
+        self.firstItem = 0;
+        self.countPage = 1;
+        self.currentPage = 1;
+    }
+};
+
+$(document).ready(function() {
+    awardsSearch.init();
+});
+
+
+HTML:
+    <div class="container-fluid pt-0"  id="result-group" data-spy="scroll"  data-target="#alphabet-filter" data-offset="0">
+        <div id="voting_row_template">
+            <li class="col-sm-4"><a class="result media box-white text-left my-2 p-3 align-items-center" href="((href))">
+                    <div class="sizer">
+                        <div class="square" style="background-image: url('((image))'), url({{ asset('bundles/insinghgwr/images/redesign/no_image.png') }})"></div>
+                    </div>
+                    <div class="media-body">
+                        <h5 class="mt-0 font-size-16 font-heavy">((name))</h5>
+                        <p class="mb-0 text-gray font-size-14">((zone))</p>
+                    </div>
+                </a>
+            </li>
+        </div>
+        <div id="voting_search_not_found" class="mt-5">
+            <div class="not-found-container text-center"><img src="{{ asset('bundles/insinghgwr/awards/images/notfound-v2.png')}}" alt="Restaurant not found">
+                <p class="font-size-14 text-gray my-4">Sorry, we can’t seem to find what you’re looking for. Try something else?</p>
+            </div>
+        </div>
+        <div id="voting_search_loading" class="mt-5">
+            <div class="text-center"><img src="{{ asset('bundles/insinghgwr/images/loading.gif') }}" alt="Searching ..."></div>
+            <p class="font-size-14 text-gray my-4 text-center">Please wait while loading the page</p>
+        </div>
+        <div id="voting_search_result_typing" class="">
+            <h2 id="result-number"></h2>
+            <ul class="" id="vote_typing">
+            </ul>
+        </div>
+        <div id="voting_search_result_list" class="">
+            <h2 id="list-0"></h2>
+            <ul class="" id="vote_0">
+            </ul>
+            <h2 id="list-a"></h2>
+            <ul class="" id="vote_a">
+            </ul>
+            <h2 id="list-b"></h2>
+            <ul class="" id="vote_b">
+            </ul>
+            <h2 id="list-c"></h2>
+            <ul class="" id="vote_c">
+            </ul>
+            <h2 id="list-d"></h2>
+            <ul class="" id="vote_d">
+            </ul>
+            <h2 id="list-e"></h2>
+            <ul class="" id="vote_e">
+            </ul>
+            <h2 id="list-f"></h2>
+            <ul class="" id="vote_f">
+            </ul>
+            <h2 id="list-g"></h2>
+            <ul class="" id="vote_g">
+            </ul>
+            <h2 id="list-h"></h2>
+            <ul class="" id="vote_h">
+            </ul>
+            <h2 id="list-i"></h2>
+            <ul class="" id="vote_i">
+            </ul>
+            <h2 id="list-j"></h2>
+            <ul class="" id="vote_j">
+            </ul>
+            <h2 id="list-k"></h2>
+            <ul class="" id="vote_k">
+            </ul>
+            <h2 id="list-l"></h2>
+            <ul class="" id="vote_l">
+            </ul>
+            <h2 id="list-m"></h2>
+            <ul class="" id="vote_m">
+            </ul>
+            <h2 id="list-n"></h2>
+            <ul class="" id="vote_n">
+            </ul>
+            <h2 id="list-o"></h2>
+            <ul class="" id="vote_o">
+            </ul>
+            <h2 id="list-p"></h2>
+            <ul class="" id="vote_p">
+            </ul>
+            <h2 id="list-q"></h2>
+            <ul class="" id="vote_q">
+            </ul>
+            <h2 id="list-r"></h2>
+            <ul class="" id="vote_r">
+            </ul>
+            <h2 id="list-s"></h2>
+            <ul class="" id="vote_s">
+            </ul>
+            <h2 id="list-t"></h2>
+            <ul class="" id="vote_t">
+            </ul>
+            <h2 id="list-u"></h2>
+            <ul class="" id="vote_u">
+            </ul>
+            <h2 id="list-v"></h2>
+            <ul class="" id="vote_v">
+            </ul>
+            <h2 id="list-w"></h2>
+            <ul class="" id="vote_w">
+            </ul>
+            <h2 id="list-x"></h2>
+            <ul class="" id="vote_x">
+            </ul>
+            <h2 id="list-y"></h2>
+            <ul class="" id="vote_y">
+            </ul>
+            <h2 id="list-z"></h2>
+            <ul class="" id="vote_z">
+            </ul>
+        </div>
+        <div id="voting_result_list_loading" class="">
+            <div class="text-center"><img src="{{ asset('bundles/insinghgwr/images/loading.gif') }}" alt="Searching ..."></div>
+            <p class="font-size-14 text-gray my-4 text-center">Please wait while loading the page</p>
+        </div>
+    </div>
+	
+PHP:
+public function autoCompleteAction(Request $request)
+    {
+        $name = trim($request->get('search_term'));
+        $request->query->set('search_term', $name);
+        $page = $request->get('p',1);
+        $prefix = $request->get('prefix','');
+        $firstItem = $request->get('first_item');
+        $businesses = array();
+        $result  = array();
+        $countItem = 0;
+        $countRow = $firstItem;
+        $pageSize = 0;
+        if(empty($name) ){
+            $pageSize = SearchController::votePageSize;
+            $term = '';
+            $request->query->set("sortBy","name");
+            $request->query->set("page_number", $page);
+            $request->query->set('search_term', $term);
+            if($prefix != '' || $prefix == '#') {
+                $request->query->set('prefix',$prefix);
+            }
+
+
+            $cache = $this->get('hgw.cache');
+            $cache_key = 'vote_search_'.$prefix.'_'.$page;
+            $cache_time = $this->container->getParameter('hgb_image_cache_time');
+            $listRestaurant = $cache->fetch($cache_key);
+            if (!$listRestaurant) {
+                $countryCode = $this->getCountryCode();
+                $serp = new SERP($this->container, $countryCode, $request);
+                $searchPage = $serp->getSearchPageObject();
+                $searchPage->setPageSize(SearchController::votePageSize);
+                $searchPage->processApiData(true);
+                $searchPage = $serp->getSearchPageObject();
+                $listRestaurant = $searchPage->getResult();
+                $cache->save($cache_key, $listRestaurant,$cache_time);
+            }
+
+            if(count($listRestaurant) > 0) {
+                foreach ($listRestaurant as $rest) {
+                    if($countItem == $pageSize) {
+                        break;
+                    }
+                    $rest['id'] = $this->container->get('common.utils')->idToUrlId($rest['id']);
+                    $rest['outlet_name']  = trim($rest['outlet_name']);
+                    $rest['trading_name'] = trim($rest['trading_name']);
+                    $rest['restaurant_name'] = $rest['trading_name'];
+                    if ($rest['outlet_name']){
+                        $rest['restaurant_name'] .= " (" . $rest['outlet_name'] . ")";
+                    }
+
+                    $result[] = $rest;
+                    $countRow++;
+                    $countItem++;
+                }
+            }
+        } else if (!empty($name)) {
+            $pageSize = SearchController::SearchPageSize;
+            $resultApi = $this->container->get('bizsearch.api')->getAutoCompleteTradingName($name, array('per_page' => SearchController::SearchSize,'page'=>$page));
+            $resultApi = $this->container->get('bizsearch.api')->parseAutoCompleteTradingName($resultApi);
+            if( !empty($resultApi) ){
+                $listRestaurant = array_slice($resultApi['restaurants'], $firstItem, $pageSize, true);
+
+                $idsBusiness = array();
+                foreach ($listRestaurant as $item) {
+                    $idsBusiness[] = $item['id'];
+                }
+
+                $listBusinessInfo = $this->container->get('bizsearch.api')->getListBusinesses($idsBusiness);
+                if (!empty($listBusinessInfo)) {
+                    foreach ($listBusinessInfo['data']['business'] as $rest) {
+                        if($countItem == $pageSize) {
+                            break;
+                        }
+                        $imageUrl = $rest['default_image_media_path'];
+
+                        if (!empty($imageUrl) ) {
+                            $imageUrl = $this->container->getParameter('business_cdn_url').$imageUrl;
+                        } else {
+                            $imageUrl = '';
+                        }
+
+                        $rest['id'] = $this->container->get('common.utils')->idToUrlId($rest['id']);
+                        $rest['outlet_name']  = trim($rest['outlet_name']);
+                        $rest['trading_name'] = trim($rest['trading_name']);
+                        $rest['restaurant_name'] = $rest['trading_name'];
+                        $rest['image_url'] = $imageUrl;
+                        $rest['address']['sector_code'] = $rest['address']['sector_code'];
+                        $rest['latest_rnr_image'] = $rest['latest_rnr_image'];
+
+                        if ($rest['outlet_name']){
+                            $rest['restaurant_name'] .= " (" . $rest['outlet_name'] . ")";
+                        }
+
+                        $result[] = $rest;
+                        $countRow++;
+                        $countItem++;
+                    }
+                }
+            }
+        }
+
+        $idsBusiness = array();
+        foreach ($result as $item) {
+            $idsBusiness[] = $this->getCommon()->urlIdToId($item['id']);
+        }
+        $em = $this->container->get('doctrine')->getManager();
+        $idsResultChecked = $em->getRepository('inSingDataSourceBundle:AwardsBusiness')->checkBusinessNominatedByIds($idsBusiness);
+
+        foreach ($result as $key => $item) {
+            $restaurantId = $this->getCommon()->urlIdToId($item['id']);
+            $imgUrl = !empty($item['image_url']) ? $item['image_url'] : '';
+            if (empty($imgUrl)) {
+                $imgUrl = !empty($item['latest_rnr_image']['image_url']) ? $item['latest_rnr_image']['image_url'] : '';
+            }
+            $businesses[] = array(
+                'id' => $item['id'],
+                'name' => $item['restaurant_name'],
+                'image' => $imgUrl,
+                'sector' => Sector::getRegion($item['address']['sector_code']),
+                'nominated' => $idsResultChecked[$restaurantId]
+            );
+        }
+        $total = ($page-1)*$pageSize + count($businesses);
+        $countPage = count($businesses);
+
+        return new Response(json_encode(array(
+            'businesses' => $businesses,
+            'success' => true,
+            'errors' => array(),
+            'total' => $total,
+            'totalPage' => $pageSize,
+            'page' => $page,
+            'countPage' => $countPage,
+            'firstItem' => $countRow,
+        )));
+    }
